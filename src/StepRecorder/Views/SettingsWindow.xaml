@@ -1,0 +1,141 @@
+<Window x:Class="StepRecorder.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:s="clr-namespace:StepRecorder.Services"
+        Style="{StaticResource FluentWindow}"
+        Title="{s:Tr Set_Title}" Width="620" Height="720" MinWidth="480" MinHeight="420"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+    <Window.Resources>
+        <Style x:Key="Row" TargetType="Grid">
+            <Setter Property="Margin" Value="0,6"/>
+        </Style>
+        <Style x:Key="Section" TargetType="TextBlock" BasedOn="{StaticResource Subtitle}">
+            <Setter Property="Margin" Value="2,18,0,8"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24,8,24,16">
+            <StackPanel>
+                <TextBlock Text="{s:Tr Set_Title}" Style="{StaticResource Title}" FontSize="26" Margin="0,8,0,0"/>
+
+                <!-- General -->
+                <TextBlock Text="{s:Tr Set_General}" Style="{StaticResource Section}"/>
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <Grid Style="{StaticResource Row}">
+                            <TextBlock Text="{s:Tr Set_Language}" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="LanguageBox" HorizontalAlignment="Right" Width="200">
+                                <ComboBoxItem Tag="de" Content="Deutsch"/>
+                                <ComboBoxItem Tag="en" Content="English"/>
+                            </ComboBox>
+                        </Grid>
+                        <Grid Style="{StaticResource Row}">
+                            <TextBlock Text="{s:Tr Set_Theme}" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="ThemeBox" HorizontalAlignment="Right" Width="200">
+                                <ComboBoxItem Tag="System" Content="{s:Tr Theme_System}"/>
+                                <ComboBoxItem Tag="Light" Content="{s:Tr Theme_Light}"/>
+                                <ComboBoxItem Tag="Dark" Content="{s:Tr Theme_Dark}"/>
+                            </ComboBox>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Recording -->
+                <TextBlock Text="{s:Tr Set_Recording}" Style="{StaticResource Section}"/>
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <CheckBox x:Name="CaptureKeyboardBox" Content="{s:Tr Set_CaptureKeyboard}"/>
+                        <CheckBox x:Name="RecordTextBox" Content="{s:Tr Set_RecordText}"
+                                  IsEnabled="{Binding IsChecked, ElementName=CaptureKeyboardBox}"/>
+                        <TextBlock Text="{s:Tr Set_RecordTextHint}" Style="{StaticResource Caption}" TextWrapping="Wrap" Margin="0,0,60,8"/>
+                        <CheckBox x:Name="HighlightBox" Content="{s:Tr Set_Highlight}"/>
+                        <CheckBox x:Name="CursorBox" Content="{s:Tr Set_Cursor}"/>
+                        <CheckBox x:Name="AllScreensBox" Content="{s:Tr Set_AllScreens}"/>
+                        <CheckBox x:Name="HideWindowBox" Content="{s:Tr Set_HideWindow}"/>
+                        <CheckBox x:Name="ToolbarBox" Content="{s:Tr Set_Toolbar}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Video -->
+                <TextBlock Text="{s:Tr Set_Video}" Style="{StaticResource Section}"/>
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <CheckBox x:Name="VideoBox" Content="{s:Tr Set_RecordVideo}"/>
+                        <Grid Style="{StaticResource Row}" IsEnabled="{Binding IsChecked, ElementName=VideoBox}">
+                            <TextBlock Text="{s:Tr Set_VideoFps}" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="FpsBox" HorizontalAlignment="Right" Width="120" MinWidth="100">
+                                <ComboBoxItem Content="2"/>
+                                <ComboBoxItem Content="5"/>
+                                <ComboBoxItem Content="10"/>
+                                <ComboBoxItem Content="15"/>
+                                <ComboBoxItem Content="20"/>
+                                <ComboBoxItem Content="30"/>
+                            </ComboBox>
+                        </Grid>
+                        <TextBlock Text="{s:Tr Set_VideoHint}" Style="{StaticResource Caption}" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Hotkeys -->
+                <TextBlock Text="{s:Tr Set_Hotkeys}" Style="{StaticResource Section}"/>
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <Grid Style="{StaticResource Row}">
+                            <TextBlock Text="{s:Tr Set_HkRecord}" VerticalAlignment="Center"/>
+                            <TextBox x:Name="HkRecordBox" HorizontalAlignment="Right" Width="200" IsReadOnly="True"
+                                     PreviewKeyDown="OnHotkeyKeyDown" Cursor="Hand"/>
+                        </Grid>
+                        <Grid Style="{StaticResource Row}">
+                            <TextBlock Text="{s:Tr Set_HkPause}" VerticalAlignment="Center"/>
+                            <TextBox x:Name="HkPauseBox" HorizontalAlignment="Right" Width="200" IsReadOnly="True"
+                                     PreviewKeyDown="OnHotkeyKeyDown" Cursor="Hand"/>
+                        </Grid>
+                        <Grid Style="{StaticResource Row}">
+                            <TextBlock Text="{s:Tr Set_HkComment}" VerticalAlignment="Center"/>
+                            <TextBox x:Name="HkCommentBox" HorizontalAlignment="Right" Width="200" IsReadOnly="True"
+                                     PreviewKeyDown="OnHotkeyKeyDown" Cursor="Hand"/>
+                        </Grid>
+                        <TextBlock Text="{s:Tr Set_HkHint}" Style="{StaticResource Caption}" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Export -->
+                <TextBlock Text="{s:Tr Set_Export}" Style="{StaticResource Section}"/>
+                <Border Style="{StaticResource Card}">
+                    <Grid Style="{StaticResource Row}">
+                        <TextBlock Text="{s:Tr Set_JpegQuality}" VerticalAlignment="Center"/>
+                        <ComboBox x:Name="QualityBox" HorizontalAlignment="Right" Width="120" MinWidth="100">
+                            <ComboBoxItem Content="70"/>
+                            <ComboBoxItem Content="80"/>
+                            <ComboBoxItem Content="88"/>
+                            <ComboBoxItem Content="95"/>
+                        </ComboBox>
+                    </Grid>
+                </Border>
+
+                <!-- About -->
+                <TextBlock Text="{s:Tr Set_About}" Style="{StaticResource Section}"/>
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock x:Name="VersionText" FontWeight="SemiBold"/>
+                        <TextBlock Text="{s:Tr Set_SettingsFile}" Style="{StaticResource Caption}" Margin="0,8,0,2"/>
+                        <TextBox x:Name="SettingsPathBox" IsReadOnly="True" FontSize="12"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Border Grid.Row="1" Background="{DynamicResource Brush.Card}" BorderBrush="{DynamicResource Brush.Divider}"
+                BorderThickness="0,1,0,0" Padding="24,16">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="{s:Tr Btn_OK}" Style="{StaticResource AccentButton}" MinWidth="120" Click="OnSave" IsDefault="True"/>
+                <Button Content="{s:Tr Btn_Cancel}" MinWidth="120" Margin="8,0,0,0" IsCancel="True"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,45 @@
+<Window x:Class="StepRecorder.Views.RecordingToolbar"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:s="clr-namespace:StepRecorder.Services"
+        Style="{StaticResource FluentWindow}"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent" ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight" Topmost="True" ShowInTaskbar="False" ShowActivated="False"
+        Title="StepRecorder">
+    <Border Style="{StaticResource Flyout}" Margin="12,6,12,16" Padding="6" MouseLeftButtonDown="OnDrag" Cursor="SizeAll">
+        <StackPanel Orientation="Horizontal">
+            <Ellipse x:Name="Dot" Width="12" Height="12" Margin="10,0,8,0" Fill="{DynamicResource Brush.Recording}"
+                     VerticalAlignment="Center">
+                <Ellipse.Triggers>
+                    <EventTrigger RoutedEvent="Loaded">
+                        <BeginStoryboard>
+                            <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0.25" Duration="0:0:0.9"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Ellipse.Triggers>
+            </Ellipse>
+            <TextBlock x:Name="TimeText" Text="00:00" FontFamily="Consolas, Segoe UI" VerticalAlignment="Center"
+                       FontWeight="SemiBold" MinWidth="44"/>
+            <TextBlock x:Name="StepsText" Style="{StaticResource Caption}" VerticalAlignment="Center" Margin="8,0,6,0" MinWidth="70"/>
+            <TextBlock x:Name="VideoText" Style="{StaticResource Caption}" VerticalAlignment="Center" Margin="0,0,6,0"
+                       Foreground="{DynamicResource Brush.Recording}" Visibility="Collapsed">
+                <Run FontFamily="{StaticResource Font.Icons}" Text="&#xE714;"/> <Run Text="{s:Tr Status_Video}"/>
+            </TextBlock>
+            <Border Style="{StaticResource Separator}"/>
+            <Button x:Name="PauseButton" Style="{StaticResource IconButton}" Click="OnPause" Cursor="Hand">
+                <TextBlock x:Name="PauseGlyph" Text="&#xE769;" Style="{StaticResource Icon}" FontSize="14"/>
+            </Button>
+            <Button Style="{StaticResource IconButton}" Click="OnComment" Cursor="Hand" ToolTip="{s:Tr Btn_Comment}">
+                <TextBlock Text="&#xE90A;" Style="{StaticResource Icon}" FontSize="14"/>
+            </Button>
+            <Button Style="{StaticResource DangerButton}" Click="OnStop" Margin="4,0,0,0" Padding="10,4" Cursor="Hand">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="&#xE71A;" Style="{StaticResource Icon}" FontSize="12" Margin="0,0,6,0"/>
+                    <TextBlock Text="{s:Tr Btn_Stop}"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </Border>
+</Window>

@@ -1,0 +1,71 @@
+name: Build
+
+on:
+  push:
+    branches: [ "**" ]
+    tags: [ "v*" ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+      PROJECT: src/StepRecorder/StepRecorder.csproj
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build
+        run: dotnet build $env:PROJECT -c Release
+
+      - name: Publish portable (self-contained, no .NET needed)
+        run: dotnet publish $env:PROJECT -c Release -r win-x64 --self-contained true -o publish/portable
+
+      - name: Publish small (needs .NET 10 Desktop Runtime)
+        run: dotnet publish $env:PROJECT -c Release -r win-x64 --self-contained false -o publish/small
+
+      - name: Smoke test on real Windows desktop
+        shell: pwsh
+        run: |
+          $out = Join-Path $pwd "smoke"
+          $p = Start-Process -FilePath "publish/portable/StepRecorder2.exe" -ArgumentList "--smoke-test", "`"$out`"" -PassThru
+          $null = $p.Handle  # cache the handle, otherwise ExitCode stays empty
+          if (-not $p.WaitForExit(180000)) { $p.Kill(); Write-Error "smoke test timed out" }
+          Get-Content "$out/smoke.log" -ErrorAction SilentlyContinue
+          if ($p.ExitCode -ne 0) { Write-Error "smoke test failed with exit code $($p.ExitCode)" }
+
+      - name: Upload smoke test results (screenshots, exports)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-test
+          path: smoke/
+
+      - name: Rename binaries
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force artifacts | Out-Null
+          Copy-Item publish/portable/StepRecorder2.exe artifacts/StepRecorder2-portable-win-x64.exe
+          Copy-Item publish/small/StepRecorder2.exe artifacts/StepRecorder2-net10-win-x64.exe
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: StepRecorder2
+          path: artifacts/*.exe
+
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*.exe
+          generate_release_notes: true

@@ -1,0 +1,20 @@
+<Application x:Class="StepRecorder.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:s="clr-namespace:StepRecorder.Services"
+             ShutdownMode="OnExplicitShutdown">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Index 0 is the color palette, swapped at runtime by ThemeManager -->
+                <ResourceDictionary Source="Themes/Light.xaml"/>
+                <ResourceDictionary Source="Themes/Controls.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <s:PathToImageConverter x:Key="PathToImage"/>
+            <s:BoolToVisibilityConverter x:Key="BoolToVis"/>
+            <s:BoolToVisibilityConverter x:Key="InvBoolToVis" Invert="True"/>
+            <s:TimeConverter x:Key="Time"/>
+            <s:InverseBoolConverter x:Key="Not"/>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

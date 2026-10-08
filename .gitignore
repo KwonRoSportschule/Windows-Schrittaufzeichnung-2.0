@@ -1,0 +1,10 @@
+bin/
+obj/
+publish/
+artifacts/
+smoke/
+*.user
+*.suo
+.vs/
+.vscode/
+*.settings.json
